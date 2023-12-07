@@ -1,0 +1,37 @@
+import networkx as nx
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Load your forum data into a DataFrame (replace 'your_data.csv' with your actual data file)
+df = pd.read_csv('your_data.csv')
+
+# Create a directed graph from the DataFrame
+G = nx.from_pandas_edgelist(df, source='source_user', target='target_user', create_using=nx.DiGraph())
+
+# Compute degree centrality
+degree_centrality = nx.degree_centrality(G)
+
+# Compute betweenness centrality
+betweenness_centrality = nx.betweenness_centrality(G)
+
+# Identify top 3 nodes by degree centrality
+top_nodes_degree = sorted(degree_centrality, key=degree_centrality.get, reverse=True)[:3]
+
+# Identify top 3 nodes by betweenness centrality
+top_nodes_betweenness = sorted(betweenness_centrality, key=betweenness_centrality.get, reverse=True)[:3]
+
+# Visualization
+pos = nx.spring_layout(G)  # Choose a layout algorithm
+nx.draw(G, pos, with_labels=True, font_size=8, font_color='black', node_size=100, node_color='skyblue')
+plt.title('Network Graph of Online Health Forum')
+plt.show()
+
+# Print top nodes by degree centrality
+print("Top Nodes by Degree Centrality:")
+for node in top_nodes_degree:
+    print(f"{node}: {degree_centrality[node]}")
+
+# Print top nodes by betweenness centrality
+print("\nTop Nodes by Betweenness Centrality:")
+for node in top_nodes_betweenness:
+    print(f"{node}: {betweenness_centrality[node]}")
