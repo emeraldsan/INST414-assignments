@@ -1,0 +1,46 @@
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+# Load your dataset into a DataFrame (replace 'your_data.csv' with your actual data file)
+df = pd.read_csv('your_data.csv')
+
+# Tokenize and preprocess text data
+stop_words = set(stopwords.words('english'))
+
+def preprocess_text(text):
+    tokens = word_tokenize(text.lower())
+    tokens = [token for token in tokens if token.isalpha() and token not in stop_words]
+    return ' '.join(tokens)
+
+df['preprocessed_text'] = df['article_text'].apply(preprocess_text)
+
+# Create a TF-IDF vectorizer
+vectorizer = TfidfVectorizer()
+
+# Transform the preprocessed text into TF-IDF vectors
+tfidf_matrix = vectorizer.fit_transform(df['preprocessed_text'])
+
+# Compute the Jaccard similarity using linear kernel
+jaccard_similarities = linear_kernel(tfidf_matrix, tfidf_matrix)
+
+# Function to get top N similar articles for a given query
+def get_top_similar_articles(query_index, N=10):
+    sim_scores = list(enumerate(jaccard_similarities[query_index]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    top_indices = [index for index, _ in sim_scores[1:N+1]]
+    return df.iloc[top_indices]['article_title'].tolist()
+
+# Queries and Results
+queries = ["Climate Change Policy", "Artificial Intelligence in Healthcare", "Space Exploration Breakthroughs"]
+
+for i, query in enumerate(queries):
+    print(f"\nQuery {i + 1}: {query}")
+    query_index = df[df['article_title'] == query].index[0]
+    similar_articles = get_top_similar_articles(query_index)
+    
+    print("Top 10 Most Similar Articles:")
+    for j, article_title in enumerate(similar_articles, 1):
+        print(f"{j}. {article_title}")
