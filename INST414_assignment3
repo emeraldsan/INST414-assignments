@@ -4,7 +4,6 @@ from sklearn.metrics.pairwise import linear_kernel
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
-# Load your dataset into a DataFrame (replace 'your_data.csv' with your actual data file)
 df = pd.read_csv('your_data.csv')
 
 # Tokenize and preprocess text data
@@ -17,7 +16,6 @@ def preprocess_text(text):
 
 df['preprocessed_text'] = df['article_text'].apply(preprocess_text)
 
-# Create a TF-IDF vectorizer
 vectorizer = TfidfVectorizer()
 
 # Transform the preprocessed text into TF-IDF vectors
@@ -33,7 +31,6 @@ def get_top_similar_articles(query_index, N=10):
     top_indices = [index for index, _ in sim_scores[1:N+1]]
     return df.iloc[top_indices]['article_title'].tolist()
 
-# Queries and Results
 queries = ["Climate Change Policy", "Artificial Intelligence in Healthcare", "Space Exploration Breakthroughs"]
 
 for i, query in enumerate(queries):
