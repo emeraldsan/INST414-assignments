@@ -2,8 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Load your forum data into a DataFrame (replace 'your_data.csv' with your actual data file)
-df = pd.read_csv('your_data.csv')
+df = pd.onlinehealth.csv('onlinehealth.csv')
 
 # Create a directed graph from the DataFrame
 G = nx.from_pandas_edgelist(df, source='source_user', target='target_user', create_using=nx.DiGraph())
