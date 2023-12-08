@@ -16,20 +16,17 @@ def fetch_data(api_url):
         print(f"Failed to fetch data. Status code: {response.status_code}")
         return None
 
-# Fetch bike-sharing data
 bike_data = fetch_data(bike_data_url)
 weather_data = fetch_data(weather_data_url)
 
-# Check if data is successfully fetched
 if bike_data and weather_data:
     # Convert data to pandas DataFrame
     bike_df = pd.DataFrame(bike_data)
     weather_df = pd.DataFrame(weather_data)
 
-    # Merge datasets on common columns (e.g., station ID and date)
+    
     merged_df = pd.merge(bike_df, weather_df, on=['station_id', 'date'])
 
-    # Exploratory Data Analysis
     # For example, plot bike rentals over time
     plt.figure(figsize=(12, 6))
     sns.lineplot(x='date', y='bike_rentals', data=merged_df)
@@ -42,7 +39,6 @@ if bike_data and weather_data:
     correlation_matrix = merged_df[['temperature', 'bike_rentals']].corr()
     print(f"Correlation between temperature and bike rentals:\n{correlation_matrix}")
 
-    # Additional analysis and visualizations can be added as needed
 
     # Save the cleaned and merged dataset to a CSV file
     merged_df.to_csv('bike_weather_data.csv', index=False)
